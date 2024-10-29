@@ -1,24 +1,48 @@
 const axios = require('axios');
+const cheerio = require('cheerio');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+require('dotenv').config();
 
-// Serverless function to fetch SEO insights
+const gemini_api_key = process.env.API_KEY;
+const googleAI = new GoogleGenerativeAI(gemini_api_key);
+const geminiConfig = {
+  temperature: 0.9,
+  topP: 1,
+  topK: 1,
+  maxOutputTokens: 4096,
+};
+const geminiModel = googleAI.getGenerativeModel({
+  model: 'gemini-pro',
+  geminiConfig,
+});
+
 module.exports = async (req, res) => {
-    // Check if the request method is POST
     if (req.method === 'POST') {
+        const url = req.body.url;
+
         try {
-            // Extract data from the request body if needed
-            const { url } = req.body;
+            const response = await axios.get(url);
+            const html = response.data;
+            const $ = cheerio.load(html);
+            $('style').remove();
+            $('link[rel="stylesheet"]').remove();
+            $('script').remove();
 
-            // Replace with your actual API endpoint or logic to fetch insights
-            const response = await axios.get(`https://api.example.com/seo?url=${encodeURIComponent(url)}`);
+            let cleanedHtml = $.html();
+            if (cleanedHtml.length > 5000) {
+                cleanedHtml = cleanedHtml.slice(0, 5000) + '...';
+            }
 
-            // Send the fetched data as a response
-            return res.status(200).json(response.data);
+            const prompt = `Analyze the following web page content: ${cleanedHtml}. Provide SEO optimization suggestions, improvement ideas, and note any mistakes.`;
+            const result = await geminiModel.generateContent(prompt);
+            const insights = result.response.text();
+
+            res.json({ insights });
         } catch (error) {
-            console.error('Error fetching SEO insights:', error);
-            return res.status(500).json({ error: 'Failed to fetch SEO insights' });
+            console.error(`Error processing the URL: ${error.message}`);
+            res.status(500).json({ error: 'An error occurred while processing the URL.' });
         }
     } else {
-        // Handle unsupported request methods
         return res.status(405).json({ error: 'Method not allowed' });
     }
 };
