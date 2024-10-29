@@ -35,6 +35,7 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+// Endpoint to fetch and analyze webpage content
 app.post('/fetch', async (req, res) => {
   const url = req.body.url;
 
@@ -64,6 +65,21 @@ app.post('/fetch', async (req, res) => {
   } catch (error) {
     console.error(`Error processing the URL: ${error.message}`);
     res.status(500).json({ error: 'An error occurred while processing the URL.' });
+  }
+});
+
+// New endpoint for generating responses based on user prompts
+app.post('/generate', async (req, res) => {
+  const { prompt } = req.body; // Extract prompt from request body
+
+  try {
+    const result = await geminiModel.generateContent(prompt);
+    const generatedResponse = result.response.text();
+
+    res.json({ response: generatedResponse });
+  } catch (error) {
+    console.error(`Error generating response: ${error.message}`);
+    res.status(500).json({ error: 'An error occurred while generating the response.' });
   }
 });
 
