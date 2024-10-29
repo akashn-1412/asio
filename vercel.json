@@ -3,13 +3,21 @@
   "builds": [
     {
       "src": "index.js",
-      "use": "@vercel/node" // Use the Node.js serverless function builder
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/fetch.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "index.js" // Route all traffic to your Node.js entry point
+      "src": "/api/fetch",
+      "dest": "api/fetch.js"
+    },
+    {
+      "src": "/",
+      "dest": "index.js"
     }
   ]
 }
