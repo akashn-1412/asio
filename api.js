@@ -1,8 +1,8 @@
-// api.js
+require('dotenv').config();
 const { GenerativeAI } = require('@google/generative-ai');
 
 const ai = new GenerativeAI({
-  apiKey: 'AIzaSyCJLrNXNg5tQULSEmrpDfevXIObPxKEcv0', // Replace with your actual API key
+  apiKey: process.env.API_KEY, // Use the API key from environment variables
 });
 
 // Example function to generate a response
