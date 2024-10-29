@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI SEO Analyzer | AI Tools for SEO Optimization</title>
+    <meta name="description" content="Enhance your website's SEO with our AI-powered analyzer. Get actionable insights and recommendations to optimize your website's performance and visibility.">
+    <meta name="keywords" content="AI SEO Analyzer, SEO Tools, Website Optimization, SEO Insights, Keyword Analysis">
+    <meta name="robots" content="index, follow">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+    
+
+    <main>
+        <div class="hero card">
+            <div class="center">
+                <div class="robot-head">
+                    <div class="lines">
+                    </div>
+                    <div class="googles">
+                        <div class="eye left-eye">
+                            <div class="pupil"></div>
+                        </div>
+                        <div class="eye right-eye">
+                            <div class="pupil"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h1>AI SEO Analyzer </h1>
+            <p>Elevate your website’s SEO strategy using our advanced AI-powered SEO analyzer. Access invaluable insights, optimize your keywords, and effortlessly improve your site's visibility.</p>
+            <form id="fetchForm">
+                <input type="url" id="url" placeholder="Enter your URL" required>
+                <div>
+                    <button type="submit">Analyze</button>
+                </div>
+            </form>
+            <div id="loading" class="loading">Loading...</div>
+            <div id="results">
+
+                <div id="insights"></div>
+            </div>
+            <div id="error" class="error"></div>
+        </div>
+
+
+        <title>Actionable SEO Recommendations</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+        <style>
+            body {
+                background-color: black;
+                color: white; 
+            }
+    
+            .card  {outline: 1px solid #0072b8;    
+                background-color: #212529; /* Darker background for cards */
+            }
+    
+            .card-header, .card-body, .card-footer { 
+                color: white; /* Ensure text inside the card is white */
+            }
+    
+            .alert {
+                background-color: #d4edda; /* Light green background for alerts */
+                color: black; /* Ensure alert text is black for visibility */
+            }
+    
+            h1, p {
+                color: white; /* Ensure headings and paragraphs are white */
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container my-5">
+            <h1 class="mb-20"><center>AI-Driven SEO Recommendations</center></h1>
+            <p> <center>Get actionable, AI-powered insights to boost your website's rankings.</center></p>
+    
+            <div class="row">
+                <div class="col-md-50"> 
+                    <div id="notifications"></div>
+                </div>
+                <div class="col-md-150"> 
+                    <div class="row" id="tasks"></div> 
+                </div>
+            </div> 
+        </div>
+    
+        <script>
+            const tasks = [
+                {
+                    id: 1,
+                    category: "Content Optimization",
+                    title: "Optimize Meta Descriptions",
+                    priority: "High",
+                    status: "pending",
+                    completion: 0,
+                    instructions: [
+                        "1.Review meta descriptions for key pages.",
+                        "2.Limit description to 160 characters.",
+                        "3.Naturally include primary keywords",
+                        "4.Add a call-to-action."
+                    ],
+                    impact: 85,
+                    delegated: false
+                },
+                {
+                    id: 2,
+                    category: "Technical SEO",
+                    title: "Improve Page Load Speed",
+                    priority: "High",
+                    status: "in-progress",
+                    completion: 35,
+                    instructions: [
+                        "1.Compress all images using WebP format.",
+                        "2.Enable browser caching.",
+                        "3.Minify CSS, JavaScript, and HTML.",
+                        "4.Implement lazy loading for images."
+                    ],
+                    impact: 90,
+                    delegated: false
+                },
+                {
+                    id: 3,
+                    category: "Backlink Acquisition",
+                    title: "Guest Posting Campaign",
+                    priority: "Medium",
+                    status: "completed",
+                    completion: 100,
+                    instructions: [
+                        "1.Identify relevant industry blogs.",
+                        "2.Prepare outreach email templates.",
+                        "3.Create high-quality guest post content.",
+                        "4.Follow up with blog owners."
+                    ],
+                    impact: 75,
+                    delegated: false
+                }
+            ];
+    
+            const notifications = [];
+    
+            function renderTasks() {
+                const tasksContainer = document.getElementById('tasks');
+                tasksContainer.innerHTML = ''; 
+                tasks.forEach(task => {
+                    const taskCard = `
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-300"> 
+                            <div class="card-header">
+                                <span class="badge bg-secondary">${task.category}</span>
+                                <span class="badge ${task.priority === 'High' ? 'bg-danger' : task.priority === 'Medium' ? 'bg-warning' : 'bg-success'}">
+                                    ${task.priority} Priority
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">${task.title}</h5>
+                                <p>Status: ${task.status.replace('-', ' ')}</p>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar" role="progressbar" style="width: ${task.completion}%" aria-valuenow="${task.completion}" aria-valuemin="0" aria-valuemax="100">${task.completion}%</div>
+                                </div>
+                                <h6>DIY Instructions:</h6>
+                                <ul>
+                                    ${task.instructions.map(instruction => `<li>${instruction}</li>`).join('')}
+                                </ul>
+                                <p>Impact Score: <strong>${task.impact}</strong>/100</p>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn btn-primary w-100" onclick="delegateTask(${task.id})" ${task.delegated ? 'disabled' : ''}>
+                                    ${task.delegated ? 'Delegated' : 'Delegate to Consultant'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                    tasksContainer.innerHTML += taskCard;
+                });
+            }
+    
+            function delegateTask(taskId) {
+                const task = tasks.find(t => t.id === taskId);
+                if (task && !task.delegated) {
+                    task.delegated = true;
+                    const notificationExists = notifications.some(n => n.message === `Task "${task.title}" delegated to consultant`);
+                    if (!notificationExists) {
+                        notifications.push({
+                            message: `Task "${task.title}" delegated to consultant`,
+                            timestamp: new Date().toLocaleTimeString()
+                        });
+                        renderNotifications();
+                    }
+                    renderTasks();
+                }
+            }
+    
+            function renderNotifications() {
+                const notificationsContainer = document.getElementById('notifications');
+                notificationsContainer.innerHTML = ''; 
+                notifications.forEach(notification => {
+                    const notificationCard = `
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>${notification.message}</strong>
+                        <span class="float-end">${notification.timestamp}</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    `;
+                    notificationsContainer.innerHTML += notificationCard;
+                });
+            }
+    
+            renderTasks();
+            renderNotifications();
+        </script>
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+        <h2><center>Key Features</center></h2>
+        <section class="features section">
+            <div class="card" id="Key-Features">
+                
+                <ul>
+                    <li><strong>Keyword Analysis</strong> Identify and utilize top-performing keywords to improve
+                        content strategy.</li>
+                    <li><strong>Content Recommendations</strong> Receive tailored advice to boost your content’s search
+                        engine ranking.</li>
+                    <li><strong>Competitor Benchmarking</strong> Compare your SEO performance against competitors to
+                        stay ahead.</li>
+                    <li><strong>Performance Tracking</strong> Monitor SEO metrics and track your progress with detailed
+                        reports.</li>
+                    <li><strong>Site Audit</strong> Perform a comprehensive audit of your website’s SEO elements.</li>
+                    <li><strong>Mobile Optimization</strong> Ensure optimal SEO performance across mobile devices.</li>
+                </ul>
+            </div>
+        </section>
+        <h2><center>Who Can Benefit?</center></h2>
+        <section class="use-cases section">
+           
+            <div class="card">
+                <ul>
+                    <li><strong>Digital Marketers:</strong> Elevate SEO campaigns with precise, data-driven insights.</li>
+                    <li><strong>eCommerce Stores:</strong> Increase product visibility and drive sales through targeted SEO.</li>
+                    <li><strong>Website Owners:</strong> Boost site rankings and attract organic traffic with ease.</li>
+                    <li><strong>SEO Professionals:</strong> Enhance client strategies with in-depth analysis and recommendations.</li>
+                    <li><strong>Content Creators:</strong> Optimize content to improve visibility and audience engagement.</li>
+                    <li><strong>Bloggers:</strong> Reach a wider audience by optimizing articles for better search rankings.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="faq section">
+            <div class="card">
+                <h2>Frequently Asked Questions</h2>
+                <hr>
+                <div class="faq-item">
+                    <h3>Q.What makes this AI SEO Analyzer unique?</h3>
+                    <p>My analyzer uses advanced AI to provide tailored SEO insights based on the latest ranking factors.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Q.Is my data secure with this tool?</h3>
+                    <p>Yes, I prioritize data privacy; information provided is not stored or shared.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Q.How do I start with SEO improvements?</h3>
+                    <p>Review the analysis insights and follow the actionable recommendations.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Q.What types of websites can use this tool?</h3>
+                    <p>This tool benefits all website types, including blogs, e-commerce, and corporate sites.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Q.Is this tool beginner-friendly?</h3>
+                    <p>Yes, My each insights are clear and easy to follow for all experience levels.</p>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+    <script type="text/javascript" src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
+    <script>
+        document.getElementById('fetchForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const url = document.getElementById('url').value;
+            const errorDiv = document.getElementById('error');
+            const loadingDiv = document.getElementById('loading');
+            const resultsDiv = document.getElementById('results');
+
+            errorDiv.textContent = '';
+            loadingDiv.style.display = 'block';
+            resultsDiv.style.display = 'none';
+
+            try {
+                // Fetch SEO insights
+                const response = await fetch('/fetch', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch insights');
+                }
+
+                const data = await response.json();
+                const insights = data.insights;
+                var converter = new showdown.Converter();
+
+                // Display loading animation
+                setTimeout(() => {
+                    loadingDiv.style.display = 'none';
+                    resultsDiv.style.display = 'block';
+                    document.getElementById('insights').innerHTML = converter.makeHtml(insights);
+                }, 1000); // Delay for animation effect
+
+            } catch (error) {
+                errorDiv.textContent = error.message;
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>
